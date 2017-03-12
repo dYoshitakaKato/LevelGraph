@@ -145,7 +145,9 @@
       <DependentUpon>KanmusuDBDataSet.xsd</DependentUpon>
     </Compile>
     <Compile Include="KanmusuDbUtil.cs" />
+    <Compile Include="KanmusuUiUtil.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="UiUtil.cs" />
     <Compile Include="UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -212,6 +214,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

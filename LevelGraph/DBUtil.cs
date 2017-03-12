@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Odbc;
+using System.Data.SqlClient;
 
 namespace LevelGraph
 {
@@ -7,14 +10,35 @@ namespace LevelGraph
     {
         private static string GetConnectionString()
         {
-            // To avoid storing the connection string in your code, 
-            // you can retrieve it from a configuration file.
-            // Assumes Northwind.mdb is located in the c:\Data folder.
-            return "Driver={Microsoft Access Driver (*.mdb)};"
-                + "Dbq=c:\\Data\\Northwind.mdb;Uid=Admin;Pwd=;";
+            var connectionString = string.Empty;
+            connectionString += @"Data Source=.\SQLEXPRESS;";
+            connectionString += @"AttachDbFilename=";
+            connectionString += @"\Plugins\KanmusuDB.mdf";
+            connectionString += @";";
+            connectionString += @"Integrated Security=true;";
+            connectionString += @"User Instance=true;";
+            return connectionString;
         }
 
-        public static void insert()
+        public static void insert(string queryString)
+        {
+            string connectionString = GetConnectionString();
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand(queryString, connection))
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dataTable);
+                }
+            }
+        }
+
+        public static void select()
         {
             string connectionString = GetConnectionString();
             string queryString =
