@@ -151,7 +151,6 @@
     <Compile Include="DbUtil.cs" />
     <Compile Include="KanmusuDbUtil.cs" />
     <Compile Include="KanmusuUiUtil.cs" />
-    <Compile Include="LevelHistory.cs" />
     <Compile Include="LevelHistoryDBContext.cs" />
     <Compile Include="Models\LevelHistory.cs" />
     <Compile Include="Plugin.cs" />

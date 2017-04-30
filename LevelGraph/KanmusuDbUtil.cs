@@ -20,7 +20,7 @@ namespace LevelGraph
             Models.LevelHistory levelHistory;
             using (LevelHistoryDBContext context = new LevelHistoryDBContext())
             {
-                var count = context.Database.SqlQuery<int>("SELECT UPPER(SeqNum) FROM LEVELHISTORY; ").CountAsync().Result;
+                var count = context.Database.SqlQuery<int>("SELECT MAX(SeqNum) FROM LEVELHISTORY; ").FirstAsync().Result;
                 foreach (Fleet fleet in fleets.Values)
                 {
                     foreach (Ship ship in fleet.Ships)
@@ -28,13 +28,17 @@ namespace LevelGraph
                         if (ship.IsLocked)
                         {
                             levelHistory = new Models.LevelHistory();
-                            levelHistory.SeqNum = count;
                             levelHistory.Id = ship.Id;
                             levelHistory.ShipId = ship.Info.Id;
                             levelHistory.InsertDate = DateTime.Now;
                             levelHistory.Level = ship.Level;
-                            context.LevelHistories.Add(levelHistory);
-                            count++;
+                            var test = context.Database.SqlQuery<int>("SELECT SeqNum FROM LEVELHISTORY WHERE Id = {0} AND InsertDate = {1}", 
+                                levelHistory.Id, levelHistory.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
+                            if (test < 1)
+                            {
+                                levelHistory.SeqNum = ++count;
+                                context.LevelHistories.Add(levelHistory);
+                            }
                         }
                     }
                 }
