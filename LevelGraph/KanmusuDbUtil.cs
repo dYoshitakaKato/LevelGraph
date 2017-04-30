@@ -7,59 +7,39 @@ namespace LevelGraph
 {
     class KanmusuDbUtil : DbUtil
     {
-        public static void insertKanmusuLevel(MemberTable<Ship> ships)
+        public static void insertKanmusuLevel(MemberTable<Fleet> fleets)
         {
-            if (0 != ships.Count)
+            if (0 != fleets.Count)
             {
-                insertLevel(ships);
-                insertKanmusu(ships);
+                insertLevel(fleets);
             }
         }
 
-        public static void insertLevel(MemberTable<Ship> ships)
+        public static void insertLevel(MemberTable<Fleet> fleets)
         {
-            string date = DateTime.Now.ToString("yyyy-MM-dd");
-            StringBuilder sqlBuilder = new StringBuilder("INSERT INTO Level VALUES ");
-            StringBuilder builder = new StringBuilder();
-            foreach (Ship ship in ships.Values)
+            Models.LevelHistory levelHistory;
+            using (LevelHistoryDBContext context = new LevelHistoryDBContext())
             {
-                if (!builder.ToString().Equals(""))
+                var count = context.Database.SqlQuery<int>("SELECT UPPER(SeqNum) FROM LEVELHISTORY; ").CountAsync().Result;
+                foreach (Fleet fleet in fleets.Values)
                 {
-                    builder.Append(", ");
+                    foreach (Ship ship in fleet.Ships)
+                    {
+                        if (ship.IsLocked)
+                        {
+                            levelHistory = new Models.LevelHistory();
+                            levelHistory.SeqNum = count;
+                            levelHistory.Id = ship.Id;
+                            levelHistory.ShipId = ship.Info.Id;
+                            levelHistory.InsertDate = DateTime.Now;
+                            levelHistory.Level = ship.Level;
+                            context.LevelHistories.Add(levelHistory);
+                            count++;
+                        }
+                    }
                 }
-                builder.Append("(");
-                builder.Append(ship.Info.Id);
-                builder.Append(", ");
-                builder.Append(ship.Level);
-                builder.Append(", ");
-                builder.Append(date);
-                builder.Append(")");
+                context.SaveChanges();
             }
-            insert(builder.ToString());
-        }
-
-        private static void insertKanmusu(MemberTable<Ship> ships)
-        {
-            StringBuilder sqlBuilder = new StringBuilder("INSERT INTO Kanmusu VALUES ");
-            StringBuilder builder = new StringBuilder();
-            foreach (Ship ship in ships.Values)
-            {
-                if (!builder.ToString().Equals(""))
-                {
-                    builder.Append(", ");
-                }
-                builder.Append("(");
-                builder.Append(ship.Info.Id);
-                builder.Append(", ");
-                builder.Append(ship.Info.Name);
-                builder.Append(")");
-            }
-            insert(builder.ToString());
-        }
-
-        public static void selectKanmusuLevel()
-        {
-
         }
 
         public static void selectLevel()
@@ -67,23 +47,8 @@ namespace LevelGraph
 
         }
 
-        public static void selectKanmusu()
-        {
-            
-        }
-
-        public static void updateKanmusuLevel()
-        {
-            // TODO iranai
-        }
-
         public static void updateLevel()
         {
-        }
-
-        private static void updateKanmusu()
-        {
-            // todo iranai
         }
 
         public static void createKanmusuLevelTable()
@@ -92,6 +57,11 @@ namespace LevelGraph
 
         private static void createLevelTable()
         {
+            using (LevelHistoryDBContext context = new LevelHistoryDBContext())
+            {
+                context.LevelHistories.Create();
+                context.SaveChanges();
+            }
         }
 
         private static void createKanmusuTable()

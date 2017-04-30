@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using StatefulModel;
+using System.Data.Entity.Core.Objects;
 
 namespace LevelGraph
 {
@@ -29,7 +30,7 @@ namespace LevelGraph
         {
             KanColleClient.Current
                 .Subscribe(nameof(KanColleClient.IsStarted), () => this.InitializeCore(), false)
-                .AddTo(this);            
+                .AddTo(this);
         }
 
         public void InitializeCore()
@@ -55,9 +56,8 @@ namespace LevelGraph
             if (!KanmusuDbUtil.checKanmusuLevelTable())
             {
                 KanmusuDbUtil.createKanmusuLevelTable();
-                MemberTable<Ship> ships = KanColleClient.Current.Homeport.Organization.Ships;
-                KanmusuDbUtil.insertKanmusuLevel(ships);
-                KanmusuDbUtil.selectKanmusuLevel();
+                MemberTable<Fleet> fleet = KanColleClient.Current.Homeport.Organization.Fleets;
+                KanmusuDbUtil.insertKanmusuLevel(fleet);
             }
         }
 

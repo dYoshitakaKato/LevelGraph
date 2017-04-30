@@ -11,12 +11,7 @@ namespace LevelGraph
         private static string GetConnectionString()
         {
             var connectionString = string.Empty;
-            connectionString += @"Data Source=.\SQLEXPRESS;";
-            connectionString += @"AttachDbFilename=";
-            connectionString += @"\Plugins\KanmusuDB.mdf";
-            connectionString += @";";
-            connectionString += @"Integrated Security=true;";
-            connectionString += @"User Instance=true;";
+            //connectionString += Properties.Settings.Default.KanmusuDBConnectionString;
             return connectionString;
         }
 
@@ -24,12 +19,12 @@ namespace LevelGraph
         {
             string connectionString = GetConnectionString();
             DataTable dataTable = new DataTable();
-
             using (SqlConnection connection = new SqlConnection())
             {
                 using (SqlCommand cmd = new SqlCommand(queryString, connection))
                 {
                     connection.ConnectionString = connectionString;
+                    //connection.ConnectionString = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = \"C:\\Program Files\\KanCollePlugins\\KanmusuDB.mdf\"; Integrated Security = True; Connect Timeout = 30;";
                     connection.Open();
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
