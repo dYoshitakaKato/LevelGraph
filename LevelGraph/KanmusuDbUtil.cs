@@ -20,7 +20,6 @@ namespace LevelGraph
             Models.LevelLog levelLog;
             using (LevelLogDBContext context = new LevelLogDBContext())
             {
-                var count = context.Database.SqlQuery<int>("SELECT MAX(SeqNum) FROM LEVELHISTORY; ").FirstAsync().Result;
                 foreach (Fleet fleet in fleets.Values)
                 {
                     foreach (Ship ship in fleet.Ships)
@@ -32,11 +31,14 @@ namespace LevelGraph
                             levelLog.ShipId = ship.Info.Id;
                             levelLog.InsertDate = DateTime.Now;
                             levelLog.Level = ship.Level;
-                            var test = context.Database.SqlQuery<int>("SELECT SeqNum FROM LEVELHISTORY WHERE Id = {0} AND InsertDate = {1}",
-                                levelLog.Id, levelLog.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
-                            if (test < 1)
+                            var result = context.Database.SqlQuery<int>("SELECT ShipId, InsertDate, Level FROM LEVELHISTORY WHERE ShipId = {0} AND InsertDate = {1}",
+                                levelLog.ShipId, levelLog.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
+                            if (result < 1)
                             {
                                 context.LevelLogs.Add(levelLog);
+                            } else
+                            {
+                                //TODO update
                             }
                         }
                     }
@@ -60,9 +62,9 @@ namespace LevelGraph
 
         private static void createLevelTable()
         {
-            using (LevelHistoryDBContext context = new LevelHistoryDBContext())
+            using (LevelLogDBContext context = new LevelLogDBContext())
             {
-                context.LevelHistories.Create();
+                context.LevelLogs.Create();
                 context.SaveChanges();
             }
         }
