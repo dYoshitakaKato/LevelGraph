@@ -151,7 +151,8 @@
     <Compile Include="DbUtil.cs" />
     <Compile Include="KanmusuDbUtil.cs" />
     <Compile Include="KanmusuUiUtil.cs" />
-    <Compile Include="LevelHistoryDBContext.cs" />
+    <Compile Include="Models\LevelLog.cs" />
+    <Compile Include="LevelLogDBContext.cs" />
     <Compile Include="Models\LevelHistory.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="UiUtil.cs" />
@@ -213,12 +214,12 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="KanmusuDB.mdf">
+    <Content Include="Kanmusu.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="KanmusuDB_log.ldf">
+    <Content Include="Kanmusu_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>KanmusuDB.mdf</DependentUpon>
+      <DependentUpon>Kanmusu.mdf</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

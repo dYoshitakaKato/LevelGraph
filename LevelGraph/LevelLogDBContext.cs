@@ -12,7 +12,7 @@ namespace LevelGraph
         {
         }
 
-        public virtual DbSet<LevelLog> LevelLogs { get; set; }
+        public virtual DbSet<Models.LevelLog> LevelLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

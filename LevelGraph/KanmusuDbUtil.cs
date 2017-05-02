@@ -17,8 +17,8 @@ namespace LevelGraph
 
         public static void insertLevel(MemberTable<Fleet> fleets)
         {
-            Models.LevelHistory levelHistory;
-            using (LevelHistoryDBContext context = new LevelHistoryDBContext())
+            Models.LevelLog levelLog;
+            using (LevelLogDBContext context = new LevelLogDBContext())
             {
                 var count = context.Database.SqlQuery<int>("SELECT MAX(SeqNum) FROM LEVELHISTORY; ").FirstAsync().Result;
                 foreach (Fleet fleet in fleets.Values)
@@ -27,17 +27,16 @@ namespace LevelGraph
                     {
                         if (ship.IsLocked)
                         {
-                            levelHistory = new Models.LevelHistory();
-                            levelHistory.Id = ship.Id;
-                            levelHistory.ShipId = ship.Info.Id;
-                            levelHistory.InsertDate = DateTime.Now;
-                            levelHistory.Level = ship.Level;
-                            var test = context.Database.SqlQuery<int>("SELECT SeqNum FROM LEVELHISTORY WHERE Id = {0} AND InsertDate = {1}", 
-                                levelHistory.Id, levelHistory.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
+                            levelLog = new Models.LevelLog();
+                            levelLog.Id = ship.Id;
+                            levelLog.ShipId = ship.Info.Id;
+                            levelLog.InsertDate = DateTime.Now;
+                            levelLog.Level = ship.Level;
+                            var test = context.Database.SqlQuery<int>("SELECT SeqNum FROM LEVELHISTORY WHERE Id = {0} AND InsertDate = {1}",
+                                levelLog.Id, levelLog.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
                             if (test < 1)
                             {
-                                levelHistory.SeqNum = ++count;
-                                context.LevelHistories.Add(levelHistory);
+                                context.LevelLogs.Add(levelLog);
                             }
                         }
                     }
