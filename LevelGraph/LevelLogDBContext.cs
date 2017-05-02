@@ -5,18 +5,17 @@ namespace LevelGraph
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class LevelHistoryDBContext : DbContext
+    public partial class LevelLogDBContext : DbContext
     {
-        public LevelHistoryDBContext()
-            : base("name=LevelHistoryDBContext")
+        public LevelLogDBContext()
+            : base("name=LevelLogDBContext")
         {
         }
 
-        public virtual DbSet<Models.LevelHistory> LevelHistories { get; set; }
+        public virtual DbSet<LevelLog> LevelLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
         }
     }
 }
