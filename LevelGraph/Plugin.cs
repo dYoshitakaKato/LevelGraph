@@ -47,15 +47,21 @@ namespace LevelGraph
         {
             if (!this.initialized) return;
 
+            /*
             foreach (var handler in this.fleetHandlers)
             {
                 handler.Dispose();
             }
             this.fleetHandlers.Clear();
+            */
 
             if (!KanmusuDbUtil.checKanmusuLevelTable())
             {
                 KanmusuDbUtil.createKanmusuLevelTable();
+                foreach (var test in KanColleClient.Current.Homeport.Organization.Fleets.Values)
+                {
+                    this.fleetHandlers.Add(test.Subscribe(nameof(Fleet.Ships), KanmusuDbUtil.insertKanmusuLevel));
+                }
                 MemberTable<Fleet> fleet = KanColleClient.Current.Homeport.Organization.Fleets;
                 KanmusuDbUtil.insertKanmusuLevel(fleet);
             }

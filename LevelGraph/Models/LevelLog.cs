@@ -12,13 +12,13 @@ namespace LevelGraph.Models
         [Key]
         [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int ShipId { get; set; }
+        public int Id { get; set; }
 
         [Key]
         [Column(Order = 1, TypeName = "date")]
         public DateTime InsertDate { get; set; }
 
-        public int Id { get; set; }
+        public int ShipId { get; set; }
 
         public int Level { get; set; }
     }

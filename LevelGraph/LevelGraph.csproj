@@ -151,9 +151,8 @@
     <Compile Include="DbUtil.cs" />
     <Compile Include="KanmusuDbUtil.cs" />
     <Compile Include="KanmusuUiUtil.cs" />
-    <Compile Include="Models\LevelLog.cs" />
     <Compile Include="LevelLogDBContext.cs" />
-    <Compile Include="Models\LevelHistory.cs" />
+    <Compile Include="Models\LevelLog.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="UiUtil.cs" />
     <Compile Include="UserControl1.xaml.cs">
@@ -212,15 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Kanmusu.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Kanmusu_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Kanmusu.mdf</DependentUpon>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

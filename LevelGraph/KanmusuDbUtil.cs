@@ -15,35 +15,61 @@ namespace LevelGraph
             }
         }
 
-        public static void insertLevel(MemberTable<Fleet> fleets)
+        public static void insertKanmusuLevel()
         {
-            Models.LevelLog levelLog;
-            using (LevelLogDBContext context = new LevelLogDBContext())
+            foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets)
             {
-                foreach (Fleet fleet in fleets.Values)
+                insertKanmusuLevel(fleet.Value);
+            }
+        }
+
+        public static void insertKanmusuLevel(Fleet fleet)
+        {
+            if (0 != fleet.Ships.Length)
+            {
+                insertLevel(fleet);
+            }
+        }
+
+        public static void insertLevel(Fleet fleet)
+        {
+            foreach (Ship ship in fleet.Ships)
+            {
+                Models.LevelLog levelLog;
+                using (LevelLogDBContext context = new LevelLogDBContext())
                 {
-                    foreach (Ship ship in fleet.Ships)
+                    if (ship.IsLocked)
                     {
-                        if (ship.IsLocked)
+                        levelLog = new Models.LevelLog();
+                        Models.LevelLog result;
+                        try
                         {
-                            levelLog = new Models.LevelLog();
+                            result = context.Database.SqlQuery<Models.LevelLog>("SELECT * FROM LevelLog WHERE Id = {0} AND InsertDate = {1}",
+                            ship.Id, DateTime.Now.ToString("yyyy/MM/dd")).FirstAsync().Result;
+                            result.Level = ship.Level;
+                        }
+                        catch (AggregateException e)
+                        {
+                            result = new Models.LevelLog();
                             levelLog.Id = ship.Id;
                             levelLog.ShipId = ship.Info.Id;
                             levelLog.InsertDate = DateTime.Now;
                             levelLog.Level = ship.Level;
-                            var result = context.Database.SqlQuery<int>("SELECT ShipId, InsertDate, Level FROM LEVELHISTORY WHERE ShipId = {0} AND InsertDate = {1}",
-                                levelLog.ShipId, levelLog.InsertDate.ToString("yyyy/MM/dd")).CountAsync().Result;
-                            if (result < 1)
-                            {
-                                context.LevelLogs.Add(levelLog);
-                            } else
-                            {
-                                //TODO update
-                            }
+                            context.LevelLogs.Add(levelLog);
                         }
+                        context.SaveChanges();
                     }
                 }
-                context.SaveChanges();
+            }
+        }
+
+        public static void insertLevel(MemberTable<Fleet> fleets)
+        {
+            {
+                foreach (Fleet fleet in fleets.Values)
+                {
+                    insertLevel(fleet);
+                }
             }
         }
 
