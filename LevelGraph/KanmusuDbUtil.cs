@@ -20,15 +20,17 @@ namespace LevelGraph
         {
             foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets)
             {
-                insertKanmusuLevel(fleet.Value);
+                insertLevel(fleet.Value);
             }
+            //MemberTable<Ship> ships = KanColleClient.Current.Homeport.Organization.Ships;
+            //KanmusuDbUtil.insertKanmusuLevel(ships);
         }
 
-        public static void insertKanmusuLevel(Fleet fleet)
+        public static void insertKanmusuLevel(MemberTable<Ship> ships)
         {
-            if (0 != fleet.Ships.Length)
+            if (0 != ships.Count)
             {
-                insertLevel(fleet);
+                insertLevel(ships);
             }
         }
 
@@ -57,6 +59,38 @@ namespace LevelGraph
                             levelLog.Level = ship.Level;
                             levelLog.ShipId = ship.Info.Id;
                         } 
+                    }
+                }
+                context.SaveChanges();
+            }
+        }
+
+        public static void insertLevel(MemberTable<Ship> ships)
+        {
+            using (LevelLogDBContext context = new LevelLogDBContext())
+            {
+                Models.LevelLog levelLog;
+                foreach (Ship ship in ships.Values)
+                {
+                    if (ship.IsLocked)
+                    {
+                        levelLog = context.LevelLogs.Find(ship.Id, DateTime.Now.Date);
+                        //.SqlQuery<Models.LevelLog>("SELECT * FROM LevelLog WHERE Id = {0} AND InsertDate = {1}",
+                        //ship.Id, DateTime.Now.ToString("yyyy/MM/dd")).FirstAsync().Result;
+                        if (null == levelLog)
+                        {
+                            levelLog = new Models.LevelLog();
+                            levelLog.Id = ship.Id;
+                            levelLog.ShipId = ship.Info.Id;
+                            levelLog.InsertDate = DateTime.Now.Date;
+                            levelLog.Level = ship.Level;
+                            context.LevelLogs.Add(levelLog);
+                        }
+                        else
+                        {
+                            levelLog.Level = ship.Level;
+                            levelLog.ShipId = ship.Info.Id;
+                        }
                     }
                 }
                 context.SaveChanges();
