@@ -62,8 +62,6 @@ namespace LevelGraph
                 {
                     this.fleetHandlers.Add(test.Subscribe(nameof(Fleet.Ships), KanmusuDbUtil.insertKanmusuLevel));
                 }
-                MemberTable<Fleet> fleet = KanColleClient.Current.Homeport.Organization.Fleets;
-                KanmusuDbUtil.insertKanmusuLevel(fleet);
             }
         }
 
